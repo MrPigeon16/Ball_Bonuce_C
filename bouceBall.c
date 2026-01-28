@@ -5,7 +5,7 @@
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
-#include <stdlib.h>
+
 
 #define COLOR_WHITE 0xffffffff
 
@@ -16,7 +16,7 @@
 #define G_FORCE 0.2
 #define E_MATERIAL 0.1
 #define ENERGY(arg) ( (arg) * (arg) / 2.0 * G_FORCE )
-int flag = 1;
+#define X_RES 1.5
 
 int window = 1;
 int last_frame_time = 0;
@@ -30,6 +30,8 @@ typedef struct
     double r;
     double vel_x;
     double vel_y;
+    int flag_y;
+    int flag_x;
 }Circle;
 
 
@@ -69,20 +71,27 @@ void handle_input()
 void bounce_ball(SDL_Renderer* renderer, Circle* ball)
 {
 
-    double max_h = 0;
-    SDL_Log("%d",flag);
-
-    if(flag)
+    SDL_Log("x speed - %f", ball->vel_x);
+    if(ball->flag_y)
     {  
         ball->y_center += ball->vel_y;
         ball->vel_y += G_FORCE;
         if(ball->y_center + ball->r >= HEIGTH)
         {
-            flag = 0;
+            ball->flag_y = 0;
         }
     }
    
-    if(!flag) 
+    if(ball->flag_x)
+    {  
+        ball->x_center += ball->vel_x;
+        if(ball->x_center + ball->r >= WIDTH)
+        {
+            ball->flag_x = 0;
+            ball->vel_x -= X_RES;
+        }
+    }
+    if(!(ball->flag_y)) 
     {
         ball->y_center -= ball->vel_y;
         ball->vel_y -= G_FORCE + E_MATERIAL;
@@ -90,7 +99,18 @@ void bounce_ball(SDL_Renderer* renderer, Circle* ball)
         SDL_Log("center - r = %f", ball->y_center - ball->r);
         if(ball->vel_y < 0)
         { 
-            flag = 1;   
+            ball->flag_y = 1;   
+        }
+    }
+
+    if(!(ball->flag_x)) 
+    {
+        ball->x_center -= ball->vel_x;
+    
+        if(ball->x_center - ball->r <= 0)
+        { 
+            ball->flag_x = 1;
+            ball->vel_x -= X_RES;
         }
     }
     SDL_Delay(20);
@@ -134,7 +154,7 @@ int main(void)
     //ball->x_center = 250;
     //ball->r =50;
     
-    Circle ball = (Circle){200,200,100,0,0};
+    Circle ball = (Circle){200,200,100,20,10,1,1};
 
     draw_ball(renderer, ball);
     SDL_RenderPresent(renderer);
