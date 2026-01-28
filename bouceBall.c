@@ -11,15 +11,14 @@
 
 #define WIDTH 900
 #define HEIGTH 600
-#define FPS 60
-#define TARGET_FPS (1000 / FPS)
+//#define FPS 60 // not in use
+//#define TARGET_FPS (1000 / FPS) // not in use
 #define G_FORCE 0.2
 #define E_MATERIAL 0.1
-#define ENERGY(arg) ( (arg) * (arg) / 2.0 * G_FORCE )
 #define X_RES 1.5
 
 int window = 1;
-int last_frame_time = 0;
+//int last_frame_time = 0; // not in use
 
 
 
@@ -71,7 +70,6 @@ void handle_input()
 void bounce_ball(SDL_Renderer* renderer, Circle* ball)
 {
 
-    SDL_Log("x speed - %f", ball->vel_x);
     if(ball->flag_y)
     {  
         ball->y_center += ball->vel_y;
@@ -96,7 +94,6 @@ void bounce_ball(SDL_Renderer* renderer, Circle* ball)
         ball->y_center -= ball->vel_y;
         ball->vel_y -= G_FORCE + E_MATERIAL;
     
-        SDL_Log("center - r = %f", ball->y_center - ball->r);
         if(ball->vel_y < 0)
         { 
             ball->flag_y = 1;   
@@ -113,7 +110,6 @@ void bounce_ball(SDL_Renderer* renderer, Circle* ball)
             ball->vel_x -= X_RES;
         }
     }
-    SDL_Delay(20);
 
 }
 
@@ -127,7 +123,6 @@ void render(SDL_Renderer* renderer, Circle* ball)
     draw_ball(renderer, *ball);
     SDL_RenderPresent(renderer);
     
-
 }
 
 int main(void)
@@ -147,67 +142,23 @@ int main(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    //Circle* ball = (Circle*)malloc(sizeof(Circle)*1);
-    //Circle ball = {250,250,50};
-    //ball->y_center = 250;
-    //ball->x_center = 250;
-    //ball->r =50;
-    
-    Circle ball = (Circle){200,200,100,20,10,1,1};
+ 
+    Circle ball = (Circle){250,250,100,20,10,1,1};
 
     draw_ball(renderer, ball);
     SDL_RenderPresent(renderer);
-
-
 
     while(window)
     { 
         handle_input();
         bounce_ball(renderer, &ball);
         render(renderer, &ball);
-        SDL_Delay(10);
+        SDL_Delay(20);
     }
   
     printf("I bout to bounce!\n");
 
-
-
     return 0;
 }
 
-
-
-void render_obj(SDL_Renderer* renderer, Circle* c)
-{
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
-    
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    draw_ball(renderer, *c);
-    
-    SDL_RenderPresent(renderer);
-    
-
-}
-void fall(SDL_Renderer* renderer, Circle* ball)
-{
-
-    
-    float deltaTime = (SDL_GetTicks() - last_frame_time) / 1000.0;
-    last_frame_time = SDL_GetTicks();
-    
-    if(ball->y_center >= 0 && ball->y_center + ball->r <= HEIGTH &&
-    ball->x_center >= 0 && ball->x_center + ball->r <= WIDTH)
-    {
-        ball->y_center += 200 * deltaTime;
-        SDL_Log("Hello!!!");
-    }
-    else
-    {
-        ball->y_center -= 200 * deltaTime;
-        SDL_Log("Hello");
-    }
-}
 
