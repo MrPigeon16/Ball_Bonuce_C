@@ -72,6 +72,7 @@ void bounce_ball(SDL_Renderer* renderer, Circle* ball)
 
     if(ball->flag_y)
     {  
+
         ball->y_center += ball->vel_y;
         ball->vel_y += G_FORCE;
         if(ball->y_center + ball->r >= HEIGTH)
@@ -94,7 +95,7 @@ void bounce_ball(SDL_Renderer* renderer, Circle* ball)
         ball->y_center -= ball->vel_y;
         ball->vel_y -= G_FORCE + E_MATERIAL;
     
-        if(ball->vel_y < 0)
+        if(ball->vel_y < 0 || ball->y_center - ball->r <= 0)
         { 
             ball->flag_y = 1;   
         }
@@ -127,8 +128,7 @@ void render(SDL_Renderer* renderer, Circle* ball)
 
 int main(int argc, char **argv)
 {
-    SDL_Log("numer of args - %d",argc);
-
+    SDL_Log("\nball radius - %s\nball init y vel - %s\nball init x vel - %s\n",argv[1],argv[2],argv[3]);
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* ball_window = SDL_CreateWindow(
         "BounceBall", 
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
      
-    Circle ball = (Circle){250,atoi(argv[3]),100,atof(argv[1]),atof(argv[2]),1,1};
+    Circle ball = (Circle){250,250,atoi(argv[1]),atof(argv[2]),atof(argv[3]),1,1};
 
     draw_ball(renderer, ball);
     SDL_RenderPresent(renderer);
@@ -157,9 +157,7 @@ int main(int argc, char **argv)
         SDL_Delay(20);
     }
   
-    printf("I bout to bounce you pigeon!\n");
-
-    printf("Params - %d\n",argc);
+    printf("I bout to bounce\n");
     return 0;
 }
 
