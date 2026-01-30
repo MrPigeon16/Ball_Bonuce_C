@@ -125,8 +125,9 @@ void render(SDL_Renderer* renderer, Circle* ball)
     
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    SDL_Log("numer of args - %d",argc);
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* ball_window = SDL_CreateWindow(
@@ -142,8 +143,8 @@ int main(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
- 
-    Circle ball = (Circle){250,250,100,20,10,1,1};
+     
+    Circle ball = (Circle){250,atoi(argv[3]),100,atof(argv[1]),atof(argv[2]),1,1};
 
     draw_ball(renderer, ball);
     SDL_RenderPresent(renderer);
@@ -156,8 +157,9 @@ int main(void)
         SDL_Delay(20);
     }
   
-    printf("I bout to bounce!\n");
+    printf("I bout to bounce you pigeon!\n");
 
+    printf("Params - %d\n",argc);
     return 0;
 }
 
